@@ -43,12 +43,6 @@ fetch(`http://localhost:3000/api/products/${id}`)
             option.innerHTML= color;
             document.querySelector("#colors").appendChild(option);
         }
-        // let button = document.createElement("button");
-        // button.id="addToCart";
-        // button.className="addToCart";
-        // document.querySelector(".item__content__addButton").appendChild(button);
-        // document.querySelector("#addToCart").innerHTML="Ajouter au panier";
-        // AddToCartButton.id=item._id;
     };
    
     let cartButton = document.getElementById("addToCart");
@@ -84,10 +78,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
                     prodTrouve = true;
                     position = i;
                     break;
-                }
-
-                // console.log(parseInt(newProduct.productId) ===  parseInt(localCart[i].productId), parseInt(newProduct.productColors) === parseInt(localCart[i].productColors))
-           
+                }           
     }
     console.log(prodTrouve)
     if( prodTrouve === true){

@@ -17,14 +17,7 @@ if (!localCart) {
     for (let product of localCart){
         //Requeter l'API pour recuperer le reste des info necessaire a la construction de notre panier
         const productUrl = "http://localhost:3000/api/products/" + product.productId;
-      
         fetch(productUrl)
-
-
-
-
-
-
         // récupérer le résultat de la requête au format json
         .then(function(res) {
             if (res.ok) {
@@ -173,88 +166,194 @@ if (!localCart) {
   }
   
   // ------------------------- Formulaire ------------- //
-  function RecupFormulaire(){
-  //Selection du bouton "Commander" dans le DOM
-    const BtnOrder = document.getElementById("Order");
-    console.log(BtnOrder);
-  
+
   //Ecoute de l'evenement du bouton au click
+  
+  const BtnOrder = document.getElementById("order");
+  console.log(BtnOrder);
   BtnOrder.addEventListener("click", (event) => {
     console.log("click")
     event.preventDefault();
-    // création d'un tableau vide afin d'y mettre les ID de produits
-    let IdProductsOrder = [];
-  
-    for (let n = 0; n < localCart.length; n++) {
-      IdProductsOrder.push(localStorage[n].productId);
-    }
-    //Creation de la constante du formulaire, en imcrémentant les valeurs de chaque clés dans les éléments sélectionnés du DOM
-    const ContactForm = {
-      firstName: document.getElementById("firstName").value,
-      lastName: document.getElementById("lastName").value,
-      address: document.getElementById("address").value,
-      city: document.getElementById("city").value,
-      email: document.getElementById("email").value,
-    };
-    //Création de l'objet orderData, pour regrouper les données de la commande
-    const OrderData = {
-      ContactForm: {
-        firstName: ContactForm.firstName,
-        lastName: ContactForm.lastName,
-        address: ContactForm.address,
-        city: ContactForm.city,
-        email: ContactForm.email,
+      //Creation de la constante du formulaire, en imcrémentant les valeurs de chaque clés dans les éléments sélectionnés du DOM
+      const ContactForm = {
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        email: document.getElementById("email").value,
+      };
+      //Création de l'objet orderData, pour regrouper les données de la commande
+      const OrderData = {
+        ContactForm: {
+          firstName: ContactForm.firstName,
+          lastName: ContactForm.lastName,
+          address: ContactForm.address,
+          city: ContactForm.city,
+          email: ContactForm.email,
+        }
+      };
+//---------------------------------------------------------------------------Validation du formulaire RegExp--------------------------------------------------------------
+      //Déclaration d'une constante de vérification de saisie adresse
+      const regExpAddress = (value) => {
+        return /^[a-zA-Z0-9,-_ ']{2,50}[ ]{0,2}$/.test(value);
+      };
+
+      //Déclaration d'un constante de vérification de saisie prenom/Nom/Ville
+      const regExpFirstLastName = (value) => {
+        return /^[A-Za-z\é\è\ê\-]{2,30}$/.test(value);
+      };
+
+      //Déclaration d'une constante de vérification de saisie adresse e-mail
+      const regExpEmail = (value) => {
+        return /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,20}$/.test(
+          value
+        );
+      };
+
+      //message erreur en cas de mauvaise saisie prenom/nom/ville
+      const textAlertName = (value) => {
+        return `${value} :  Nb caractères : 2 - 30 / Les chiffres et symboles ne sont pas autorisés `;
+      };
+
+      //message erreur en cas de mauvaise saisie d'adresse
+      const textAlertAdress = (value) => {
+        return `${value} : Veuillez de saisir une adresse valide`;
+      };
+
+      //message erreur en cas de mauvaise saisie de la ville
+      const textAlertCity = (value) => {
+        return `${value} : Veuillez saisir une ville ou un code postal valide`;
+      };
+      //message erreur en cas de mauvaise saisie d'adresse e-mail
+      const textAlertemail = (value) => {
+        return `${value} : Veuillez saisir une adresse e-mail valide`;
+      };
+
+      //Fonction de control de la saisie du prénom
+      function firstNameControl() {
+        const firstName = ContactForm.firstName;
+        console.log(firstName)
+        if (regExpFirstLastName(firstName)) {
+          firstNameErrorMsg.textContent = "Saisie valide ";
+          firstNameErrorMsg.style.color = "white";
+          return true;
+        } else {
+          firstNameErrorMsg.textContent = textAlertName("Prénom");
+          return false;
+        }
       }
-    };
-    //--------------------Validation du formulaire RegExp
-    //Déclaration d'une constante de vérification de saisie adresse
-    const regExpAddress = (value) => {
-      return /^[a-zA-Z0-9,-_ ']{2,50}[ ]{0,2}$/.test(value);
-    };
-  
-    //Déclaration d'un constante de vérification de saisie prenom/Nom/Ville
-    const regExpFirstLastName = (value) => {
-      return /^[A-Za-z\é\è\ê\-]{2,30}$/.test(value);
-    };
-  
-    //Déclaration d'une constante de vérification de saisie adresse e-mail
-    const regExpEmail = (value) => {
-      return /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,20}$/.test(value);
-    };
-  
-    //message erreur en cas de mauvaise saisie prenom/nom/ville
-    const textAlertName = (value) => {
-      return `${value} :  Nb caractères : 2 - 30 / Les chiffres et symboles ne sont pas autorisés `;
-    };
-  
-    //message erreur en cas de mauvaise saisie d'adresse
-    const textAlertAdress = (value) => {
-      return `${value} : Veuillez de saisir une adresse valide`;
-    };
-  
-    //message erreur en cas de mauvaise saisie de la ville
-    const textAlertCity = (value) => {
-      return `${value} : Veuillez saisir une ville ou un code postal valide`;
-    };
-  
-    //message erreur en cas de mauvaise saisie d'adresse e-mail
-    const textAlertemail = (value) => {
-      return `${value} : Veuillez saisir une adresse e-mail valide`;
-    };
-  
-    //Fonction de control de la saisie du prénom
-    function firstNameVerif() {
-      const firstName = ContactForm.firstName;
-      
-      if (regExpFirstLastName(firstName)) {
-        getElementById("firstNameErrorMsg").innerHTML = "Saisie valide ";
-        return true;
+
+      //Fonction de control de la saisie du nom
+      function lastNameControl() {
+        const lastName = ContactForm.lastName;
+
+        if (regExpFirstLastName(lastName)) {
+          lastNameErrorMsg.textContent = "Saisie valide ";
+          lastNameErrorMsg.style.color = "white";
+          return true;
+        } else {
+          lastNameErrorMsg.textContent = textAlertName("Nom");
+          return false;
+        }
+      }
+
+      //Fonction de control de la saisie de l'adresse
+      function addressControl() {
+        const address = ContactForm.address;
+
+        if (regExpAddress(address)) {
+          addressErrorMsg.textContent = "Saisie valide ";
+          addressErrorMsg.style.color = "white";
+          return true;
+        } else {
+          addressErrorMsg.textContent = textAlertAdress("Adresse");
+          return false;
+        }
+      }
+
+      //Fonction de control de la saisie de la Ville
+      function cityControl() {
+        const city = ContactForm.city;
+
+        if (regExpAddress(city)) {
+          cityErrorMsg.textContent = "Saisie valide ";
+          cityErrorMsg.style.color = "white";
+          return true;
+        } else {
+          cityErrorMsg.textContent = textAlertCity("Ville");
+          return false;
+        }
+      }
+
+      //Fonction de control de la saisie de l'adresse
+      function emailControl() {
+        const email = ContactForm.email;
+
+        if (regExpEmail(email)) {
+          emailErrorMsg.textContent = "Saisie valide ";
+          emailErrorMsg.style.color = "white";
+          return true;
+        } else {
+          emailErrorMsg.textContent = textAlertemail("Email");
+          return false;
+        }
+      }
+      //ajouter le bouton commander ici
+      if (
+        firstNameControl() &&
+        lastNameControl() &&
+        addressControl() &&
+        cityControl() &&
+        emailControl()
+      ) {
+        postOrder()
+        // localStorage.setItem("order", JSON.stringify(OrderData));
       } else {
-        
+        alert("Une saisie est érroné, Veuillez bien remplir le formulaire");
         return false;
       }
-    }
+       //---------------------------------------------------------------------------Fin du control du formulaire---------------------------------------------------------------------------
+      //envoyer les données de la commande vers le serveur via une requête POST
+      function postOrder() {
+        let localStorageProducts = JSON.parse(localStorage.getItem("cart"));
+        let products = [];
+        // ajout de chaque id par produit dans un tableau produit
+        for (let k = 0; k < localStorageProducts.length; k++) {
+            products.push(localStorageProducts[k].productId);
+        }
+      
+        // Je mets en place la variable data avec les éléments nécessaires concernant les produits et le formulaire
+        let data = {
+           contact: ContactForm,
+            products,
+        };      
+        // Fetch POST
+        
+        fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((res) => {
+                if (res.status == 201) {
+                    alert("Votre commande a bien été validée");
+                    return res.json();
+                } else if (res.status !== 201) {
+                    alert(
+                        "une erreur est survenue lors de l'envoi du formulaire, veuillez réessayer"
+                    );
+                }
+            })
+            .then((res) => {
+                // Vide le localStorage
+                localStorage.clear();
+                // Ouvre la page de confirmation avec le numéro de commande dans l'URL
+                window.location.href = `../html/confirmation.html?order_id=${res.orderId}`;
+            })
+            .catch((error) => console.log("Erreur : " + error));
+      }
+    })
 
-  })
-}
-    
